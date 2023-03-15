@@ -23,72 +23,23 @@ IM_SIZE = 128
 # model 9 => 0.7450000047683716 , 0.73000
 # model 10 => 0.7825000286102295 , 0.75250
 # model 11 => 0.7799999713897705 , 0.75250
+# model 12 => 0.7825000286102295 , 0.75250
+# model 13 => 0.7799999713897705 , 0.75250
 
-
-# model => 0.762499988079071
-# input = Input(shape = (IM_SIZE,IM_SIZE,3))
-# conv1 = Conv2D(8,3,activation='relu')(input)
-# pool1 = MaxPool2D(pool_size=(2, 2))(conv1)
-
-# conv2 = Conv2D(16,3,activation='relu')(pool1)
-# pool2 = MaxPool2D(pool_size=(2, 2))(conv2)
-
-# conv3 = Conv2D(32,3,activation='relu')(pool2)
-# pool3 = MaxPool2D(pool_size=(2, 2))(conv3)
-
-# conv4 = Conv2D(64,3,activation='relu')(pool3)
-# pool4 = MaxPool2D(pool_size=(2, 2))(conv4)
-
-# conv5 = Conv2D(128,3,activation='relu')(pool4)
-# pool5 = MaxPool2D(pool_size=(2, 2))(conv5)
-
-# flat = Flatten()(pool5)
-# hidden = Dense(64, activation='relu')(flat)
-# drop = Dropout(0.2)(hidden)
-# hidden = Dense(32, activation='relu')(hidden)
-# drop = Dropout(0.2)(hidden)
-# output = Dense(4, activation='softmax')(drop)
-# model = Model(inputs=input, outputs=output)
-
-
-# model 2 => 0.7300000190734863
-# input = Input(shape = (IM_SIZE,IM_SIZE,3))
-# conv1 = Conv2D(8,3,activation='relu')(input)
-# pool1 = MaxPool2D(pool_size=(2, 2))(conv1)
-
-# conv2 = Conv2D(16,3,activation='relu')(pool1)
-# pool2 = MaxPool2D(pool_size=(2, 2))(conv2)
-
-# conv3 = Conv2D(32,3,activation='relu')(pool2)
-# pool3 = MaxPool2D(pool_size=(2, 2))(conv3)
-
-# conv4 = Conv2D(64,3,activation='relu')(pool3)
-# pool4 = MaxPool2D(pool_size=(2, 2))(conv4)
-
-# flat = Flatten()(pool4)
-# hidden = Dense(64, activation='relu')(flat)
-# drop = Dropout(0.2)(hidden)
-# hidden = Dense(32, activation='relu')(hidden)
-# drop = Dropout(0.2)(hidden)
-# output = Dense(4, activation='softmax')(drop)
-# model = Model(inputs=input, outputs=output)
-
-#Create model 6 => 0.7699999809265137 , 0.72000
-#Create model 5 => 0.7524999976158142 , 0.70500
-#Create model 4 => 0.7549999952316284 , 0.76250
 input = Input(shape = (IM_SIZE,IM_SIZE,3))
 
 conv1 = Conv2D(32,3,activation='relu')(input)
 pool1 = MaxPool2D(pool_size=(2, 2))(conv1)
 
-conv2 = Conv2D(32,3,activation='relu')(pool1)
+conv2 = Conv2D(64,3,activation='relu')(pool1)
 pool2 = MaxPool2D(pool_size=(2, 2))(conv2)
 
-conv3 = Conv2D(32,3,activation='relu')(pool2)
+conv3 = Conv2D(64,3,activation='relu')(pool2)
 pool3 = MaxPool2D(pool_size=(2, 2))(conv3)
 
 conv4 = Conv2D(64,3,activation='relu')(pool3)
-pool4 = MaxPool2D(pool_size=(2, 2))(conv4)
+drop = Dropout(0.3)(conv4)
+pool4 = MaxPool2D(pool_size=(2, 2))(drop)
 
 conv5 = Conv2D(128,3,activation='relu')(pool4)
 pool5 = MaxPool2D(pool_size=(2, 2))(conv5)
@@ -100,31 +51,6 @@ hidden = Dense(32, activation='relu')(hidden)
 drop = Dropout(0.3)(hidden)
 output = Dense(4, activation='softmax')(drop)
 model = Model(inputs=input, outputs=output)
-
-# model 3 => 0.7699999809265137
-# input = Input(shape = (IM_SIZE,IM_SIZE,3))
-# conv1 = Conv2D(8,3,activation='relu')(input)
-# pool1 = MaxPool2D(pool_size=(2, 2))(conv1)
-
-# conv2 = Conv2D(16,3,activation='relu')(pool1)
-# pool2 = MaxPool2D(pool_size=(2, 2))(conv2)
-
-# conv3 = Conv2D(32,3,activation='relu')(pool2)
-# pool3 = MaxPool2D(pool_size=(2, 2))(conv3)
-
-# conv4 = Conv2D(64,3,activation='relu')(pool3)
-# pool4 = MaxPool2D(pool_size=(2, 2))(conv4)
-
-# conv5 = Conv2D(128,3,activation='relu')(pool4)
-# pool5 = MaxPool2D(pool_size=(2, 2))(conv5)
-
-# flat = Flatten()(pool5)
-# hidden = Dense(128, activation='relu')(flat)
-# drop = Dropout(0.3)(hidden)
-# hidden = Dense(64, activation='relu')(hidden)
-# drop = Dropout(0.3)(hidden)
-# output = Dense(4, activation='softmax')(drop)
-# model = Model(inputs=input, outputs=output)
 
 
 model.compile(optimizer='adam',
@@ -162,7 +88,7 @@ test_generator = datagen.flow_from_directory(
 
 # Train Model
 # check point
-checkpoint = ModelCheckpoint('contest_model_11.h5', verbose=1, monitor='val_accuracy',save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint('contest_model_12.h5', verbose=1, monitor='val_accuracy',save_best_only=True, mode='max')
 
 # ต้อว fit ผ่าน generator
 h = model.fit_generator(
@@ -178,7 +104,7 @@ plt.plot(h.history['val_accuracy'])
 plt.legend(['train', 'val'])
 
 # test model
-model = load_model('contest_model_11.h5')
+model = load_model('contest_model_12.h5')
 score = model.evaluate_generator(
     test_generator,
     steps=len(test_generator))
