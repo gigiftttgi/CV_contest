@@ -21,7 +21,7 @@ test_generator = datagen.flow_from_directory(
     color_mode='rgb',
     class_mode='categorical')
 
-model = load_model('contest_model_3.h5')
+model = load_model('modelAll/contest_model_8.h5')
 
 score = model.evaluate_generator(
     test_generator,
@@ -39,6 +39,8 @@ result = open("result.txt", "w")
 predict_class_idx = np.argmax(predict,axis = -1)
 
 predict_class_name = [className[x] for x in predict_class_idx]
+print('predicted class index:\n', predict_class_idx)
+
 
 f = test_generator.filenames
 for i in range(len(f)) :
