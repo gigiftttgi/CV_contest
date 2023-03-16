@@ -23,7 +23,7 @@ IM_SIZE = 128
 # model 9 => 0.7450000047683716 , 0.73000
 # model 10 => 0.7825000286102295 , 0.75250
 # model 11 => 0.7799999713897705 , 0.75250
-# model 12 => 0.7825000286102295 , 0.75250
+# model 12 => 0.7649999856948853 , 0.78500
 # model 13 => 0.7799999713897705 , 0.75250
 
 input = Input(shape = (IM_SIZE,IM_SIZE,3))
@@ -31,15 +31,14 @@ input = Input(shape = (IM_SIZE,IM_SIZE,3))
 conv1 = Conv2D(32,3,activation='relu')(input)
 pool1 = MaxPool2D(pool_size=(2, 2))(conv1)
 
-conv2 = Conv2D(64,3,activation='relu')(pool1)
+conv2 = Conv2D(32,3,activation='relu')(pool1)
 pool2 = MaxPool2D(pool_size=(2, 2))(conv2)
 
-conv3 = Conv2D(64,3,activation='relu')(pool2)
+conv3 = Conv2D(32,3,activation='relu')(pool2)
 pool3 = MaxPool2D(pool_size=(2, 2))(conv3)
 
 conv4 = Conv2D(64,3,activation='relu')(pool3)
-drop = Dropout(0.3)(conv4)
-pool4 = MaxPool2D(pool_size=(2, 2))(drop)
+pool4 = MaxPool2D(pool_size=(2, 2))(conv4)
 
 conv5 = Conv2D(128,3,activation='relu')(pool4)
 pool5 = MaxPool2D(pool_size=(2, 2))(conv5)
@@ -88,7 +87,7 @@ test_generator = datagen.flow_from_directory(
 
 # Train Model
 # check point
-checkpoint = ModelCheckpoint('contest_model_12.h5', verbose=1, monitor='val_accuracy',save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint('contest_model_13.h5', verbose=1, monitor='val_accuracy',save_best_only=True, mode='max')
 
 # ต้อว fit ผ่าน generator
 h = model.fit_generator(
@@ -104,7 +103,7 @@ plt.plot(h.history['val_accuracy'])
 plt.legend(['train', 'val'])
 
 # test model
-model = load_model('contest_model_12.h5')
+model = load_model('contest_model_13.h5')
 score = model.evaluate_generator(
     test_generator,
     steps=len(test_generator))
