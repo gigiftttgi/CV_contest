@@ -7,45 +7,24 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
+import os
 
 IM_SIZE = 128
 
+model = load_model('modelAll/contest_model_10.h5')
 
-datagen = ImageDataGenerator(rescale=1./255)
+c = os.listdir("contestData")
 
-test_generator = datagen.flow_from_directory(
-    'dataset3/test',
-    shuffle=False,
-    target_size=(IM_SIZE,IM_SIZE),
-    batch_size=50,
-    color_mode='rgb',
-    class_mode='categorical')
+className = {0:'B',1:'D',2:'R',3:'S'}
 
-model = load_model('modelAll/contest_model_8.h5')
-
-score = model.evaluate_generator(
-    test_generator,
-    steps=len(test_generator))
-print('score (cross_entropy, accuracy):\n',score)
-
-predict = model.predict_generator(
-    test_generator,
-    steps=len(test_generator),
-    workers = 1,
-    use_multiprocessing=False)
-
-className = ['B','D','R','S']
 result = open("result.txt", "w")
-predict_class_idx = np.argmax(predict,axis = -1)
-
-predict_class_name = [className[x] for x in predict_class_idx]
-print('predicted class index:\n', predict_class_idx)
-
-
-f = test_generator.filenames
-for i in range(len(f)) :
-    result.write(str(f[i]) + ":" + predict_class_name[i]  + "\n")
-
-result.close()
-
-
+for n in c:
+    im = cv2.imread("contestData/"+ n,cv2.IMREAD_COLOR)
+    im = cv2.resize(im,(128,128))
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+    im = im/255.
+    im = np.expand_dims(im, axis=0)
+    predict = model.predict(im)
+    classImg = np.argmax(predict,axis = -1)[0]
+    result.write(str(n) + "::" + className[classImg]  + "\n")
